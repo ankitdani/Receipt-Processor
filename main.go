@@ -105,7 +105,7 @@ func getPoints(w http.ResponseWriter, r *http.Request) {
 
 func main() {
     http.HandleFunc("/receipts/process", processReceipt)
-    http.HandleFunc("/receipts/", getPoints) // Note: make sure this matches the format for `getPoints`
+    http.HandleFunc("/receipts/", getPoints) 
 
     fmt.Printf("Starting server at port 8080\n")
 
