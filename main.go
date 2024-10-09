@@ -7,7 +7,18 @@ import (
 )
 
 func proccessReceipt(w http.ResponseWriter, r *http.Request) {
+	err := json.NewDecoder(r.Body).Decode(&receipt)
+	if err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	points := calculatePoints(receipt)
 	
+	id := uuid.New().String()
+	receipts[id] =  points
+
+	json.NewEncoder(w).Encode(map[string]string{"id": id})
 }
 func main() {
 
