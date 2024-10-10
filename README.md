@@ -54,7 +54,7 @@ docker-compose up --build
   }
   ```
 - **Response**
-  ```
+```
 {
     "id": "unique_receipt_id"
 }
