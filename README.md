@@ -87,7 +87,7 @@ curl -X POST http://localhost:8080/receipts/process -H "Content-Type: applicatio
 }
 ```
 
-- **Response**:
+- **Response body**:
 ```
 {
     "id": "unique_receipt_id"
