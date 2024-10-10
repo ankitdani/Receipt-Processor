@@ -38,7 +38,10 @@ func calculatePoints(receipt Receipt) int {
     alphanumeric := regexp.MustCompile(`[a-zA-Z0-9]`)
     points += len(alphanumeric.FindAllString(receipt.Retailer, -1))
 
-    total, _ := strconv.ParseFloat(receipt.Total, 64)
+    total, err := strconv.ParseFloat(receipt.Total, 64)
+    if err != nil {
+        return 0, fmt.Errorf("Invalid total amount: %s", err)
+    }
 
     if total == math.Floor(total) {
         points += 50
@@ -58,12 +61,18 @@ func calculatePoints(receipt Receipt) int {
         }
     }
 
-    day, _ := strconv.Atoi(strings.Split(receipt.PurchaseDate, "-")[2])
+    day, err := strconv.Atoi(strings.Split(receipt.PurchaseDate, "-")[2])
+    if err != nil {
+        return 0, fmt.Errorf("Invalid purchase date: %s", err)
+    }
     if day%2 != 0 {
         points += 6
     }
 
-    purchaseTime, _ := time.Parse("15:04", receipt.PurchaseTime)
+    purchaseTime, err := time.Parse("15:04", receipt.PurchaseTime)
+    if err != nil {
+        return 0, fmt.Errorf("Invalid purchase time: %s", err)
+    }
     if purchaseTime.After(time.Date(0, 0, 0, 14, 0, 0, 0, time.UTC)) &&
         purchaseTime.Before(time.Date(0, 0, 0, 16, 0, 0, 0, time.UTC)) {
         points += 10
@@ -81,7 +90,11 @@ func processReceipt(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    points := calculatePoints(receipt)
+    points, err := calculatePoints(receipt)
+    if err != nil {
+        http.Error(w, "Error calculating points: "+err.Error(), http.StatusBadRequest)
+        return
+    }
 
     id := uuid.New().String()
     receipts[id] = points
