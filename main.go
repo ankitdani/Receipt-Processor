@@ -32,7 +32,7 @@ type PointsResponse struct {
 
 var receipts = make(map[string]int)
 
-func calculatePoints(receipt Receipt) int {
+func calculatePoints(receipt Receipt) (int, error) {
     points := 0
 
     alphanumeric := regexp.MustCompile(`[a-zA-Z0-9]`)
@@ -40,7 +40,7 @@ func calculatePoints(receipt Receipt) int {
 
     total, err := strconv.ParseFloat(receipt.Total, 64)
     if err != nil {
-        return 0, fmt.Errorf("Invalid total amount: %s", err)
+        return 0, fmt.Errorf("Invalid total amount: %w", err)
     }
 
     if total == math.Floor(total) {
@@ -56,14 +56,17 @@ func calculatePoints(receipt Receipt) int {
     for _, item := range receipt.Items {
         description := strings.TrimSpace(item.ShortDescription)
         if len(description)%3 == 0 {
-            price, _ := strconv.ParseFloat(item.Price, 64)
+            price, err := strconv.ParseFloat(item.Price, 64)
+            if err != nil {
+                return 0, fmt.Errorf("Invalid item price: %w", err)
+            }
             points += int(math.Ceil(price * 0.2))
         }
     }
 
     day, err := strconv.Atoi(strings.Split(receipt.PurchaseDate, "-")[2])
     if err != nil {
-        return 0, fmt.Errorf("Invalid purchase date: %s", err)
+        return 0, fmt.Errorf("invalid purchase date: %w", err)
     }
     if day%2 != 0 {
         points += 6
@@ -71,14 +74,14 @@ func calculatePoints(receipt Receipt) int {
 
     purchaseTime, err := time.Parse("15:04", receipt.PurchaseTime)
     if err != nil {
-        return 0, fmt.Errorf("Invalid purchase time: %s", err)
+        return 0, fmt.Errorf("Invalid purchase time: %w", err)
     }
     if purchaseTime.After(time.Date(0, 0, 0, 14, 0, 0, 0, time.UTC)) &&
         purchaseTime.Before(time.Date(0, 0, 0, 16, 0, 0, 0, time.UTC)) {
         points += 10
     }
 
-    return points
+    return points, nil
 }
 
 func processReceipt(w http.ResponseWriter, r *http.Request) {
@@ -118,7 +121,7 @@ func getPoints(w http.ResponseWriter, r *http.Request) {
 
 func main() {
     http.HandleFunc("/receipts/process", processReceipt)
-    http.HandleFunc("/receipts/", getPoints) 
+    http.HandleFunc("/receipts/", getPoints)
 
     fmt.Printf("Starting server at port 8080\n")
 

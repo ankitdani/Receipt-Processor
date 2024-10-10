@@ -54,6 +54,11 @@ docker-compose up --build
   }
   ```
 
+-**Test using curl**:
+```
+curl -X POST http://localhost:8080/receipts/process -H "Content-Type: application/json" -d '<your POST body>'  
+```
+
 - **Sample POST body**:
 ```
 {
@@ -91,6 +96,10 @@ docker-compose up --build
 
 - **Endpoint**: `http:localhost:8080/receipts/{id}/points`
 - **Method**: `GET`
+- **Test using curl**:
+```
+curl http://localhost:8080/receipts/<your-uuid>/points
+```
 - **Response**:
 ```
 {
