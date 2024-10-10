@@ -19,7 +19,8 @@ This is a golang application that calculates points based on submitted receipts.
 
 1. Clone the repository
 
-```git clone https://github.com/ankitdani/Receipt-Processor.git
+```
+git clone https://github.com/ankitdani/Receipt-Processor.git
 ```
 
 2. Navigate to directory
@@ -52,15 +53,15 @@ docker-compose up --build
       "purchaseTime": "HH:MM"
   }
   ```
-
-- **Endpoint**: `http:localhost:8080/receipts/{id}/points`
-- **Method**: `GET`
-```
+- **Response**
+  ```
 {
     "id": "unique_receipt_id"
 }
 ```
 
+- **Endpoint**: `http:localhost:8080/receipts/{id}/points`
+- **Method**: `GET`
 - **Response**
 ```
 {
