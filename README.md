@@ -42,18 +42,18 @@ docker-compose up --build
   ```json
   {
       "retailer": "string",
-      "total": number,
+      "total": <number>,
       "items": [
           {
               "shortDescription": "string",
-              "price": number
+              "price": <number>
           }
       ],
       "purchaseDate": "YYYY-MM-DD",
       "purchaseTime": "HH:MM"
   }
   ```
-- **Response**
+- **Response**:
 ```
 {
     "id": "unique_receipt_id"
@@ -62,7 +62,7 @@ docker-compose up --build
 
 - **Endpoint**: `http:localhost:8080/receipts/{id}/points`
 - **Method**: `GET`
-- **Response**
+- **Response**:
 ```
 {
     "points": number
