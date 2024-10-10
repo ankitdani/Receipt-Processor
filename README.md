@@ -42,11 +42,11 @@ docker-compose up --build
   ```json
   {
       "retailer": "string",
-      "total": <number>,
+      "total": number,
       "items": [
           {
               "shortDescription": "string",
-              "price": <number>
+              "price": number
           }
       ],
       "purchaseDate": "YYYY-MM-DD",
